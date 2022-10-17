@@ -218,6 +218,11 @@ criaIndice(){
   exit
 }
 
+indexaShakespeare(){
+  curl -H 'Content-Type: application/json' -XPOST ${urlServico}/shakespeare/_bulk?pretty --data-binary @material_baixado/shakespeare_7.0.json
+  exit
+}
+
 _checaLoginRegistry(){
   if [ ! -f "$HOME/.docker/config.json" ] || \
      [ $(cat "$HOME/.docker/config.json" | grep ${registrytrt10} | wc -l) -eq 0 ]; then 
@@ -280,6 +285,7 @@ menu(){
     CleanAll           ) cleanAll;;
     CheckEnv           ) checkEnv;;
     CriaIndice         ) criaIndice;;
+    IndexaShakespeare  ) indexaShakespeare;;
     Quit               ) exit;;
   esac
 }
@@ -291,7 +297,7 @@ echo -e "${sep}\n"
 
 if [ -z "${operacao}" ]; then
   echo "Escolha uma das seguintes opções:"
-  select op in "Build" "Run" "Stop" "Exec" "BuildRun" "BuildRunExec" "Push" "BuildPush" "ViewLogsContainer" "CleanAll" "CheckEnv" "CriaIndice" "Quit"; do
+  select op in "Build" "Run" "Stop" "Exec" "BuildRun" "BuildRunExec" "Push" "BuildPush" "ViewLogsContainer" "CleanAll" "CheckEnv" "CriaIndice" "IndexaShakespeare" "Quit"; do
     menu $op
   done
 else
