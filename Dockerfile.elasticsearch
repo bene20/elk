@@ -1,0 +1,18 @@
+FROM docker.elastic.co/elasticsearch/elasticsearch:7.7.0
+
+LABEL maintainer="Ebenezer Rangel Botelho <bene20@gmail.com>"
+LABEL application="Curso de ELK"
+
+COPY --chown=elasticsearch:root resources/elasticsearch.yml /usr/share/elasticsearch/config/
+COPY --chown=elasticsearch:root resources/elasticsearch-fonetica-portuguesa-0.0.1  /usr/share/elasticsearch/plugins/elasticsearch-fonetica-portuguesa-0.0.1
+
+USER root
+
+#Definindo o timezone do S.O. para o Brasil (sem o horário de verão)
+RUN rm -f /etc/localtime && ln -s /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
+
+RUN chmod 660 /usr/share/elasticsearch/config/elasticsearch.yml    
+
+USER elasticsearch
+
+#ENV discovery.type=single-node

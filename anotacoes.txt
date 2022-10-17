@@ -1,0 +1,5 @@
+
+Json do Shakespeare baixado abaixo:
+  wget http://media.sundog-soft.com/es7/shakes-mapping.json
+
+
