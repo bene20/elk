@@ -15,4 +15,4 @@ RUN chmod 660 /usr/share/elasticsearch/config/elasticsearch.yml
 
 USER elasticsearch
 
-#ENV discovery.type=single-node
+ENV discovery.type=single-node

@@ -109,6 +109,11 @@ runDock(){
   exit
 }
 
+runDockDebuging(){
+  _runDock "-it"
+  exit
+}
+
 _stopDock(){
   docker container stop ${container} > /tmp/resp_stop 2>&1
   [ $? != 0 ] || cat /tmp/resp_stop
@@ -213,16 +218,6 @@ checkEnv(){
   exit
 }
 
-criaIndice(){
-  curl -H 'Content-Type: application/json' -XPUT ${urlServico}/shakespeare --data-binary @material_baixado/shakes-mapping.json
-  exit
-}
-
-indexaShakespeare(){
-  curl -H 'Content-Type: application/json' -XPOST ${urlServico}/shakespeare/_bulk?pretty --data-binary @material_baixado/shakespeare_7.0.json
-  exit
-}
-
 _checaLoginRegistry(){
   if [ ! -f "$HOME/.docker/config.json" ] || \
      [ $(cat "$HOME/.docker/config.json" | grep ${registrytrt10} | wc -l) -eq 0 ]; then 
@@ -248,16 +243,21 @@ _build(){
 
 _runDock(){
   _stopDock
+  modoContainer=$1
 
   echo "Subindo o serviço na porta ${exposePort}"
-  echo "Obs: O container está subindo em modo daemon. Nenhum log será exibido."
+  if [ -z ${modoContainer} ]; then
+    modoContainer=-d
+    echo "Obs: O container está subindo em modo daemon. Nenhum log será exibido."
+  fi
 
-  docker container run -d --rm --name ${container} \
+  docker container run ${modoContainer} \
+         --rm --name ${container} \
          -p $exposePort:9200 \
          --ulimit memlock=-1:-1 \
          --ulimit nofile=65535:65535 \
          --ulimit nproc=4096:4096 \
-         -v elasticsearch-data:/usr/share/elasticsearch/data \
+         -v volumeElasticsearchbn:/usr/share/elasticsearch/data \
          ${imagem} 
 
   if [ $? -ne 0 ]; then
@@ -284,8 +284,7 @@ menu(){
     ViewLogsContainer  ) viewLogsContainer;;
     CleanAll           ) cleanAll;;
     CheckEnv           ) checkEnv;;
-    CriaIndice         ) criaIndice;;
-    IndexaShakespeare  ) indexaShakespeare;;
+    RunDebugging       ) runDockDebuging;;
     Quit               ) exit;;
   esac
 }
@@ -297,7 +296,7 @@ echo -e "${sep}\n"
 
 if [ -z "${operacao}" ]; then
   echo "Escolha uma das seguintes opções:"
-  select op in "Build" "Run" "Stop" "Exec" "BuildRun" "BuildRunExec" "Push" "BuildPush" "ViewLogsContainer" "CleanAll" "CheckEnv" "CriaIndice" "IndexaShakespeare" "Quit"; do
+  select op in "Build" "Run" "Stop" "Exec" "BuildRun" "BuildRunExec" "Push" "BuildPush" "ViewLogsContainer" "CleanAll" "CheckEnv" "RunDebugging" "Quit"; do
     menu $op
   done
 else
