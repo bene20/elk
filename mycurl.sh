@@ -1,2 +1,2 @@
 #!/bin/bash
-curl -H 'Content-Type: application/json' "$@"
+curl --silent -H 'Content-Type: application/json' "$@"

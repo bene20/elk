@@ -1,6 +1,6 @@
 1.
  
-curl -XPUT "http://127.0.0.1:9200/demo-default/_doc/1" -d'{
+./mycurl.sh -XPUT "http://127.0.0.1:9200/demo-default/_doc/1" -d'{
   "message": "[5592:1:0309/123054.737712:ERROR:child_process_sandbox_support_impl_linux.cc(79)] FontService unique font name matching request did not receive a response.",
   "fileset": {
     "name": "syslog"
@@ -19,19 +19,19 @@ curl -XPUT "http://127.0.0.1:9200/demo-default/_doc/1" -d'{
  
 2.
  
-curl -XGET "http://127.0.0.1:9200/demo-default/_mapping?pretty=true"
+./mycurl.sh -XGET "http://127.0.0.1:9200/demo-default/_mapping?pretty=true"
  
 3.
  
-curl -XGET "http://127.0.0.1:9200/_cluster/state?pretty=true" >> es-cluster-state.json
+./mycurl.sh -XGET "http://127.0.0.1:9200/_cluster/state?pretty=true" >> es-cluster-state.json
  
 4.
  
-curl -XPUT "http://127.0.0.1:9200/demo-flattened"
+./mycurl.sh -XPUT "http://127.0.0.1:9200/demo-flattened"
  
 5.
  
-curl -XPUT "http://127.0.0.1:9200/demo-flattened/_mapping" -d'{
+./mycurl.sh -XPUT "http://127.0.0.1:9200/demo-flattened/_mapping" -d'{
   "properties": {
     "host": {
       "type": "flattened"
@@ -41,7 +41,7 @@ curl -XPUT "http://127.0.0.1:9200/demo-flattened/_mapping" -d'{
  
 6.
  
-curl -XPUT "http://127.0.0.1:9200/demo-flattened/_doc/1" -d'{
+./mycurl.sh -XPUT "http://127.0.0.1:9200/demo-flattened/_doc/1" -d'{
   "message": "[5592:1:0309/123054.737712:ERROR:child_process_sandbox_support_impl_linux.cc(79)] FontService unique font name matching request did not receive a response.",
   "fileset": {
     "name": "syslog"
@@ -59,11 +59,11 @@ curl -XPUT "http://127.0.0.1:9200/demo-flattened/_doc/1" -d'{
  
 7.
  
-curl -XGET "http://127.0.0.1:9200/demo-flattened/_mapping?pretty=true"
+./mycurl.sh -XGET "http://127.0.0.1:9200/demo-flattened/_mapping?pretty=true"
  
 8.
  
-curl -XPOST "http://127.0.0.1:9200/demo-flattened/_update/1" -d'{
+./mycurl.sh -XPOST "http://127.0.0.1:9200/demo-flattened/_update/1" -d'{
     "doc" : {
         "host" : {
           "osVersion": "Bionic Beaver",
@@ -74,7 +74,7 @@ curl -XPOST "http://127.0.0.1:9200/demo-flattened/_update/1" -d'{
  
 9.
  
-curl -XGET "http://127.0.0.1:9200/demo-flattened/_search?pretty=true" -d'{
+./mycurl.sh -XGET "http://127.0.0.1:9200/demo-flattened/_search?pretty=true" -d'{
   "query": {
     "term": {
       "host": "Bionic Beaver"
@@ -84,7 +84,7 @@ curl -XGET "http://127.0.0.1:9200/demo-flattened/_search?pretty=true" -d'{
  
 10.
  
-curl -XGET "http://127.0.0.1:9200/demo-flattened/_search?pretty=true" -d'{
+./mycurl.sh -XGET "http://127.0.0.1:9200/demo-flattened/_search?pretty=true" -d'{
   "query": {
     "term": {
       "host.osVersion": "Bionic Beaver"
@@ -94,7 +94,7 @@ curl -XGET "http://127.0.0.1:9200/demo-flattened/_search?pretty=true" -d'{
  
 11.
  
-curl -XGET "http://127.0.0.1:9200/demo-flattened/_search?pretty=true" -d'{
+./mycurl.sh -XGET "http://127.0.0.1:9200/demo-flattened/_search?pretty=true" -d'{
   "query": {
     "term": {
       "host.osVersion": "Beaver"

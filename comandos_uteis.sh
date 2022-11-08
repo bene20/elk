@@ -69,18 +69,10 @@ wget http://media.sundog-soft.com/es7/series.json -O material_baixado/series.jso
 #Fazendo consulta para descobrir qual é o pai de um determinado filho (no caso, qual a série do filme 'The Force Awakens')
 ./mycurl.sh -XGET 127.0.0.1:9200/series/_search?pretty -d '{"query":{"has_child":{"type":"film","query":{"match":{"title":"The Force Awakens"}}}}}'
 
+#ReCria a estrutura do índice movies no ES, usando o subcampo raw para ordenar o campo texto title
+./mycurl.sh -XDELETE 127.0.0.1:9200/movies
+./mycurl.sh -XPUT 127.0.0.1:9200/movies -d '{"mappings":{"properties":{"title":{"type":"text","fields":{"raw":{"type":"keyword"}}}}}}'
+./mycurl.sh -XPUT http://127.0.0.1:9200/_bulk?pretty --data-binary @material_baixado/movies.json
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#Pesquisa no índice ordenando a resposta pelo título (pelo subcampo title.raw)
+./mycurl.sh -XGET http://127.0.0.1:9200/movies/_search?sort=title.raw
