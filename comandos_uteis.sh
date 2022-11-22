@@ -76,3 +76,20 @@ wget http://media.sundog-soft.com/es7/series.json -O material_baixado/series.jso
 
 #Pesquisa no índice ordenando a resposta pelo título (pelo subcampo title.raw)
 ./mycurl.sh -XGET http://127.0.0.1:9200/movies/_search?sort=title.raw
+
+# Aula 54 - Baixando o índice de filmes (com muito mais filmes, para processamento via script python)
+wget http://files.grouplens.org/datasets/movielens/ml-latest-small.zip -O material_baixado/ml-latest-small.zip
+wget http://media.sundog-soft.com/es7/MoviesToJson.py -O material_baixado/MoviesToJson.py
+python3 MoviesToJson.py > moremovies.json
+./mycurl.sh -XDELETE 127.0.0.1:9200/movies
+./mycurl.sh -XPUT http://127.0.0.1:9200/_bulk?pretty --data-binary @material_baixado/moremovies.json
+./mycurl.sh -XGET 127.0.0.1:9200/movies/_search?q=mary%20poppins&pretty=true
+
+# Logstash - Baixando arquivo de log para análise pelo logstash
+wget http://media.sundog-soft.com/es/access_log -O material_baixado/access_log
+
+# Listando os índices criados no Elasticsearch
+./mycurl.sh -XGET 127.0.0.1:9200/_cat/indices?v
+
+# Consultando o índices criado, na aula 59, no Elasticsearch
+./mycurl.sh -XGET 127.0.0.1:9200/logstash-2022.11.22-000001/_search | jq

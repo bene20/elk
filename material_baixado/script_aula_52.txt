@@ -1,0 +1,92 @@
+1. Exluindo o índice de filmes
+./mycurl.sh -XDELETE 127.0.0.1:9200/movies
+=======================================================================
+
+2. Criando o analyzer que decidimos chamar de 'autocomplete'
+./mycurl.sh -XPUT '127.0.0.1:9200/movies?pretty' -d '
+{
+"settings": {
+"analysis": {
+"filter": {
+"autocomplete_filter": {
+"type": "edge_ngram",
+"min_gram": 1,
+"max_gram": 20
+}
+},
+"analyzer": {
+"autocomplete": {
+"type": "custom",
+"tokenizer": "standard",
+"filter": [
+"lowercase",
+"autocomplete_filter"
+]
+}
+}
+}
+}
+}'
+=======================================================================
+
+3. Testando o analyzer criado acima com uma string 'sta'
+./mycurl.sh -XGET '127.0.0.1:9200/movies/_analyze?pretty' -d '
+{
+"analyzer": "autocomplete",
+"text": "sta"
+}'
+=======================================================================
+
+4. Mapeando o nosso analyzer para o campo título (title)
+./mycurl.sh -XPUT '127.0.0.1:9200/movies/_mapping?pretty' -d '
+{
+"properties" : {
+"title": {
+"type" : "text",
+"analyzer": "autocomplete"
+}
+}
+}'
+=======================================================================
+5. Reindexando os dados
+./mycurl.sh -XPUT 127.0.0.1:9200/_bulk --data-binary @material_baixado/movies.json
+=======================================================================
+
+6. Testando o analyzer buscando o termo 'sta' no título (esta busca traz termos que não queremos pois ele usa o unigram 's', o que faz retornar todos os títulos que tenham a letra 's')
+./mycurl.sh -XGET '127.0.0.1:9200/movies/_search?pretty' -d '
+{
+"query": {
+"match": {
+"title": "sta"
+}
+}
+}'
+=======================================================================
+
+7.Testando o analyzer buscando o termo 'sta' no título (esta busca traz apenas o que queremos pois usa o analyzer standard)
+./mycurl.sh -XGET '127.0.0.1:9200/movies/_search?pretty' -d '
+{
+"query": {
+"match": {
+"title": {
+"query": "sta",
+"analyzer": "standard"
+}
+}
+}
+}'
+=======================================================================
+
+8. Testa a pesquisa que objetiva retornar apenas o filme 'star trek' (também retorna 'star wars', que não é desejado, mas com relevância (score) menor)
+
+./mycurl.sh -XGET '127.0.0.1:9200/movies/_search?pretty' -d '
+{
+"query": {
+"match": {
+"title": {
+"query": "star tr",
+"analyzer": "standard"
+}
+}
+}
+}'

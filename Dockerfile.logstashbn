@@ -1,0 +1,19 @@
+#FROM docker.elastic.co/logstash/logstash:7.7.0
+FROM ubuntu:18.04
+
+LABEL maintainer="Ebenezer Rangel Botelho <bene20@gmail.com>"
+LABEL application="Curso de ELK"
+
+#Definindo o timezone do S.O. para o Brasil (sem o horário de verão)
+RUN rm -f /etc/localtime && ln -s /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
+
+RUN apt update -y && \
+    apt -y install gnupg wget openjdk-8-jre-headless tree vim && \
+    wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add - && \
+    apt install -y apt-transport-https && \
+    echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-7.x.list && \
+    apt update -y && \
+    apt install -y logstash=1:7.7.0-1
+
+#Executando sleep infinito para o container não encerrar quando for carregado pela opção 'Run' do script goDocker
+CMD sleep infinity

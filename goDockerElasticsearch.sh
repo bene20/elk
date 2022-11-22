@@ -8,6 +8,7 @@ portElasticSearch=9200 # Usada para chamadas à API do elasticsearch via protoco
 container=$elasticsearchcontainername
 exposePort=$portElasticSearch
 imagem=elasticsearchbn:1.0
+projectPath=$(realpath $(dirname $0))
 
 urlServico=http://127.0.0.1:$exposePort
 
@@ -259,6 +260,7 @@ _runDock(){
          --ulimit nproc=4096:4096 \
          -v volumeElasticsearchbn:/usr/share/elasticsearch/data \
          ${imagem} 
+         #--mount type=volume,source=${projectPath}/logs/elasticsearch.log,target=/usr/share/elasticsearch/logs/ebenezer.log \
 
   if [ $? -ne 0 ]; then
     echo "Erro ao tentar subir o container"
@@ -291,7 +293,7 @@ menu(){
 
 operacao="$1"
 echo -e "\n${sep}"
-echo "BACKEND ELASTICSEARCH"
+echo "ELASTICSEARCH"
 echo -e "${sep}\n"
 
 if [ -z "${operacao}" ]; then
