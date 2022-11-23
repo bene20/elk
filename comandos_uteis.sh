@@ -93,3 +93,9 @@ wget http://media.sundog-soft.com/es/access_log -O material_baixado/access_log
 
 # Consultando o índices criado, na aula 59, no Elasticsearch
 ./mycurl.sh -XGET 127.0.0.1:9200/logstash-2022.11.22-000001/_search | jq
+
+# Logstash - Baixando arquivo csv e seu respectivo conf para análise pelo logstash
+wget https://raw.githubusercontent.com/coralogix-resources/elk-course-samples/master/csv-schema-short-numerical.csv -O material_baixado/csv-schema-short-numerical.csv
+wget https://raw.githubusercontent.com/coralogix-resources/elk-course-samples/master/csv-read.conf -O material_baixado/csv-read.conf
+wget https://raw.githubusercontent.com/coralogix-resources/elk-course-samples/master/csv-read-drop.conf -O material_baixado/csv-read-drop.conf
+

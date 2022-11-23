@@ -242,7 +242,7 @@ _runDock(){
   docker container run ${modoContainer} \
          --rm --name ${container} \
          --mount type=bind,source=${projectPath}/resources/logstash/logstash.conf,target=/etc/logstash/conf.d/logstash.conf \
-         --mount type=bind,source=${projectPath}/material_baixado/access_log,target=/home/ebenezer/access_log \
+         --mount type=bind,source=${projectPath}/material_baixado,target=/home/ebenezer/material_baixado \
          ${imagem} 
 
   if [ $? -ne 0 ]; then
