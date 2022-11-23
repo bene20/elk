@@ -85,6 +85,10 @@ python3 MoviesToJson.py > moremovies.json
 ./mycurl.sh -XPUT http://127.0.0.1:9200/_bulk?pretty --data-binary @material_baixado/moremovies.json
 ./mycurl.sh -XGET 127.0.0.1:9200/movies/_search?q=mary%20poppins&pretty=true
 
+#####################################
+# Tópicos no Logstash
+#####################################
+
 # Logstash - Baixando arquivo de log para análise pelo logstash
 wget http://media.sundog-soft.com/es/access_log -O material_baixado/access_log
 
@@ -99,3 +103,5 @@ wget https://raw.githubusercontent.com/coralogix-resources/elk-course-samples/ma
 wget https://raw.githubusercontent.com/coralogix-resources/elk-course-samples/master/csv-read.conf -O material_baixado/csv-read.conf
 wget https://raw.githubusercontent.com/coralogix-resources/elk-course-samples/master/csv-read-drop.conf -O material_baixado/csv-read-drop.conf
 
+# Logstash - Baixando arquivo json e seu respectivo conf para análise pelo logstash
+wget http://media.sundog-soft.com/es/sample-json.log -O material_baixado/sample-json.log

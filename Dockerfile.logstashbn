@@ -8,7 +8,7 @@ LABEL application="Curso de ELK"
 RUN rm -f /etc/localtime && ln -s /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 
 RUN apt update -y && \
-    apt -y install gnupg wget openjdk-8-jre-headless tree vim && \
+    apt -y install gnupg wget openjdk-8-jre-headless tree vim jq curl iputils-ping && \
     wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add - && \
     apt install -y apt-transport-https && \
     echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-7.x.list && \
