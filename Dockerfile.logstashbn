@@ -15,5 +15,9 @@ RUN apt update -y && \
     apt update -y && \
     apt install -y logstash=1:7.7.0-1
 
+ENV PATH $PATH:/usr/share/logstash/bin/
+
+WORKDIR /home/ebenezer
+
 #Executando sleep infinito para o container não encerrar quando for carregado pela opção 'Run' do script goDocker
 CMD sleep infinity

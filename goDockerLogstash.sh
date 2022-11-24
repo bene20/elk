@@ -241,6 +241,7 @@ _runDock(){
 
   docker container run ${modoContainer} \
          --rm --name ${container} \
+         --mount type=bind,source=${HOME}/.vimrc,target=/root/.vimrc \
          --mount type=bind,source=${projectPath}/resources/logstash,target=/home/ebenezer/logstash \
          --mount type=bind,source=${projectPath}/material_baixado,target=/home/ebenezer/material_baixado \
          ${imagem} 

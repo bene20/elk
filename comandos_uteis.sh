@@ -103,5 +103,6 @@ wget https://raw.githubusercontent.com/coralogix-resources/elk-course-samples/ma
 wget https://raw.githubusercontent.com/coralogix-resources/elk-course-samples/master/csv-read.conf -O material_baixado/csv-read.conf
 wget https://raw.githubusercontent.com/coralogix-resources/elk-course-samples/master/csv-read-drop.conf -O material_baixado/csv-read-drop.conf
 
-# Logstash - Baixando arquivo json e seu respectivo conf para análise pelo logstash
+# Logstash - Baixando arquivo json para análise pelo logstash
 wget http://media.sundog-soft.com/es/sample-json.log -O material_baixado/sample-json.log
+wget http://media.sundog-soft.com/es/sample-json-split.log -O material_baixado/sample-json-split.log
