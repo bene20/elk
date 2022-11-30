@@ -85,6 +85,15 @@ python3 MoviesToJson.py > moremovies.json
 ./mycurl.sh -XPUT http://127.0.0.1:9200/_bulk?pretty --data-binary @material_baixado/moremovies.json
 ./mycurl.sh -XGET 127.0.0.1:9200/movies/_search?q=mary%20poppins&pretty=true
 
+# Aula 55 - Processamento via biblioteca)
+wget http://media.sundog-soft.com/es7/IndexRatings.py -O material_baixado/IndexRatings.py
+pip3 install Elasticsearch==7.7.0
+./mycurl.sh -XGET '127.0.0.1:9200/ratings/_search'
+./mycurl.sh -XGET '127.0.0.1:9200/ratings/_search' -d '{"aggs":{"ratings":{"terms":{"field":"rating"}}}}'
+./mycurl.sh -XGET '127.0.0.1:9200/ratings/_search' -d '{"aggs":{"ratings":{"terms":{"field":"rating"}}}}' | jsonpath -j '$.aggregations.ratings.buckets[?(@.key=5.0)]'
+./mycurl.sh -XGET "127.0.0.1:9200/ratings/_search" -d '{"query":{"match":{"rating":5.0}},"aggs":{"ratings":{"terms":{"field":"rating"}}}}' | jq '.aggregations'
+./mycurl.sh -XGET "127.0.0.1:9200/ratings/_search" -d '{"query":{"match_phrase":{"title":"Star Wars Episode IV"}},"aggs":{"avg_rating":{"avg":{"field":"rating"}}}}'  | jq '.aggregations'
+
 #####################################
 # Tópicos no Logstash
 #####################################
