@@ -1,0 +1,5 @@
+#FROM docker.elastic.co/logstash/logstash:7.7.0
+FROM kibana:7.7.0
+
+LABEL maintainer="Ebenezer Rangel Botelho <bene20@gmail.com>"
+LABEL application="Curso de ELK"

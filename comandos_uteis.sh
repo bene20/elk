@@ -115,3 +115,7 @@ wget https://raw.githubusercontent.com/coralogix-resources/elk-course-samples/ma
 # Logstash - Baixando arquivo json para análise pelo logstash
 wget http://media.sundog-soft.com/es/sample-json.log -O material_baixado/sample-json.log
 wget http://media.sundog-soft.com/es/sample-json-split.log -O material_baixado/sample-json-split.log
+
+# Aula 65 - recriando o índice ratings para funcionar agregações
+#./mycurl.sh -XDELETE 127.0.0.1:9200/ratings
+./mycurl.sh -XPUT 127.0.0.1:9200/ratings -d '{"mappings":{"properties":{"title":{"type":"text","fields":{"raw":{"type":"keyword"}}}}}}'

@@ -3,11 +3,10 @@
 #set -x #Descomentar esta linha para debugar este script
 
 nomerede=netbn
-elasticsearchcontainername=elasticsearchbn
-portElasticSearch=9200 # Usada para chamadas à API do elasticsearch via protocolo HTTP
-container=$elasticsearchcontainername
-exposePort=$portElasticSearch
-imagem=elasticsearchbn:1.0
+kibanacontainername=kibanabn
+container=$kibanacontainername
+exposePort=5601
+imagem=kibanabn:1.0
 projectPath=$(realpath $(dirname $0))
 
 urlServico=http://127.0.0.1:$exposePort
@@ -39,11 +38,13 @@ testaComando jq
 _waitService(){
   echo $sep
   echo -en "\n\nAguardando carregamento de serviço em ${urlServico}: "
-  rc=0
-  while [ $rc -eq 0 ]; do
+  rc1=0
+  rc2=0
+  while [ $rc1 -eq 0 ] && [ $rc2 -eq 0 ]; do
     echo -n "."
     #Checando se a url informada na resposta de redirecionamento acima está acessível
-    rc=$(curl -s --head --request GET ${urlServico} | head -n 1 | grep "200 OK" | wc -l)
+    rc1=$(curl -s --head --request GET ${urlServico} | head -n 1 | grep "200 OK" | wc -l)
+    rc2=$(curl -s --head --request GET ${urlServico} | head -n 1 | grep "302 Found" | wc -l)
     sleep 1
   done
   echo "OK!"
@@ -165,9 +166,9 @@ _conectarRede(){
   echo "Container '$container' conectado à rede '$nomerede'"
 }
 
-_checaElasticSearch(){
-  if ! $(docker network inspect $nomerede | jq -r 'map(.Containers[].Name) []' | grep -q $elasticsearchcontainername); then
-    echo "Container do ElasticSearch não encontrado na rede '$nomerede'. Provavelmente ele não está carregado. Abortando!!"
+_checaKibana(){
+  if ! $(docker network inspect $nomerede | jq -r 'map(.Containers[].Name) []' | grep -q $kibanacontainername); then
+    echo "Container do Kibana não encontrado na rede '$nomerede'. Provavelmente ele não está carregado. Abortando!!"
     exit 1
   fi
 }
@@ -241,12 +242,12 @@ _checaLoginRegistry(){
   fi
 }
 _removeVolumes(){
-  docker volume rm elasticsearch-data > /dev/null 2>&1
+  docker volume rm kibana-data > /dev/null 2>&1
 }
 
 _build(){
   docker image build --force-rm -t ${imagem} \
-         -f Dockerfile.elasticsearch .
+         -f Dockerfile.kibanabn .
 
   if [ $? -ne 0 ]; then
     echo "Erro no build da imagem"
@@ -266,11 +267,10 @@ _runDock(){
 
   docker container run ${modoContainer} \
          --rm --name ${container} \
-         -p $exposePort:9200 \
-         --ulimit memlock=-1:-1 \
-         --ulimit nofile=65535:65535 \
-         --ulimit nproc=4096:4096 \
-         -v volumeElasticsearchbn:/usr/share/elasticsearch/data \
+         -p $exposePort:5601 \
+         --mount type=bind,source=${HOME}/.vimrc,target=/root/.vimrc \
+         --mount type=bind,source=${projectPath}/resources/kibana,target=/home/ebenezer/kibana \
+         --mount type=bind,source=${projectPath}/resources/kibana/kibana.yml,target=/usr/share/kibana/config/kibana.yml \
          ${imagem} 
 
   if [ $? -ne 0 ]; then
@@ -304,7 +304,7 @@ menu(){
 
 operacao="$1"
 echo -e "\n${sep}"
-echo "ELASTICSEARCH"
+echo "KIBANA"
 echo -e "${sep}\n"
 
 if [ -z "${operacao}" ]; then

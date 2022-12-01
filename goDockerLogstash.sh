@@ -104,6 +104,14 @@ runDockDebuging(){
 
 _stopDock(){
   docker container stop ${container} > /tmp/resp_stop 2>&1
+
+  echo -n "Aguardando container encerrar: "
+  while [ $(docker container ls | grep kibanabn | wc -l) -gt 0 ]; do
+    echo -n "."
+  done
+  echo
+  echo "Finalizado!"
+
   [ $? != 0 ] || cat /tmp/resp_stop
   rm -f /tmp/resp_stop
 }
@@ -118,7 +126,7 @@ _execDock(){
   docker container exec -it ${container} /bin/bash
 }
 
-_conectarRede(){
+_criaRede(){
   if [ $(docker network ls | grep $nomerede | wc -l) -eq 0 ]; then
     docker network create $nomerede
   
@@ -129,6 +137,10 @@ _conectarRede(){
     
     echo "Criada rede docker privada '$nomerede'"
   fi
+}
+
+_conectarRede(){
+  _criaRede
 
   docker network connect $nomerede $container
 
@@ -241,7 +253,6 @@ _runDock(){
 
   docker container run ${modoContainer} \
          --rm --name ${container} \
-         --network host \
          --mount type=bind,source=${HOME}/.vimrc,target=/root/.vimrc \
          --mount type=bind,source=${projectPath}/resources/logstash,target=/home/ebenezer/logstash \
          --mount type=bind,source=${projectPath}/material_baixado,target=/home/ebenezer/material_baixado \
@@ -252,7 +263,7 @@ _runDock(){
     exit 1
   fi
 
-  #_conectarRede
+  _conectarRede
   _waitService
 }
 
